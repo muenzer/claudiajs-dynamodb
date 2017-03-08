@@ -1,4 +1,4 @@
-var query = require('../lib/querystring.js');
+var lib = require('../index.js');
 
 describe("A function for parsing query paramters", function() {
   var queryString;
@@ -10,14 +10,14 @@ describe("A function for parsing query paramters", function() {
       limit: 2,
       last: "abc"
     };
-  	var options = query.parse(queryString);
+  	var options = lib.querystring(queryString);
     expect(options).toBeDefined();
     expect(options.limit).toBe('2');
     expect(options.last).toBe('abc');
     expect(options.filter).not.toBeDefined();
   });
   it("returns an empty object", function() {
-    var options = query.parse(queryString);
+    var options = lib.querystring(queryString);
     expect(typeof(options)).toBe('object');
     expect(Object.keys(options).length).toBe(0);
   });
@@ -25,7 +25,7 @@ describe("A function for parsing query paramters", function() {
     queryString = {
       foo: "bar"
     };
-    var options = query.parse(queryString);
+    var options = lib.querystring(queryString);
     expect(typeof(options)).toBe('object');
     expect(Object.keys(options).length).toBe(0);
   });
