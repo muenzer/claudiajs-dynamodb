@@ -1,0 +1,32 @@
+{
+  "name": "claudiajs-dynamodb",
+  "version": "0.0.1",
+  "description": "Library of functions to help call dynamodb from within claudiajs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muenzer/claudiajs-dynamodb.git"
+  },
+  "keywords": [
+    "aws",
+    "dynamodb",
+    "lambda",
+    "caludiajs"
+  ],
+  "author": "Chris Muenzer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muenzer/claudiajs-dynamodb/issues"
+  },
+  "homepage": "https://github.com/muenzer/claudiajs-dynamodb#readme",
+  "dependencies": {
+    "shortid": "^2.2.8"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.24.0",
+    "jasmine": "^2.5.3"
+  }
+}

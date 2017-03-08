@@ -1,4 +1,5 @@
 var AWS = require('aws-sdk');
+var lib = require('../index.js');
 var dynamo = {};
 var id = null;
 
@@ -11,9 +12,7 @@ describe("DynamoDB interface", function () {
       secretAccessKey: "test"
     };
 
-    var dynamodb = new AWS.DynamoDB(dynamoconfig);
-    dynamo.raw = dynamodb;
-    dynamo.doc = new AWS.DynamoDB.DocumentClient({service:dynamodb});
+    dynamo = new lib.dynamo(dynamoconfig);
     dynamo.tableName = "test";
   });
 
@@ -58,9 +57,7 @@ describe("DynamoDB interface", function () {
       ]
     };
 
-    var lib = require('../lib/create-table');
-
-    var response = lib.respond(params, dynamo);
+    var response = lib.createTable(params, dynamo);
 
     response.then(function (response) {
       expect(response).toBeDefined();
@@ -69,7 +66,6 @@ describe("DynamoDB interface", function () {
   });
 
   it("creates an item", function (done) {
-    var lib = require('../lib/create');
     dynamo.tableName = "test";
 
     var data = {
@@ -78,7 +74,7 @@ describe("DynamoDB interface", function () {
       sort: "A"
     };
 
-    var response = lib.respond(data, dynamo);
+    var response = lib.create(data, dynamo);
 
     //create additional items for pagination test
 
@@ -86,13 +82,13 @@ describe("DynamoDB interface", function () {
       name: "bar"
     };
 
-    lib.respond(data, dynamo);
+    lib.create(data, dynamo);
 
     data = {
       name: "car"
     };
 
-    lib.respond(data, dynamo);
+    lib.create(data, dynamo);
 
 
     response.then(function (response) {
@@ -103,10 +99,9 @@ describe("DynamoDB interface", function () {
   });
 
   it("scans table", function (done) {
-    var lib = require('../lib/scan');
     dynamo.tableName = "test";
 
-    var response = lib.respond(dynamo);
+    var response = lib.scan(dynamo);
 
     response.then(function (response) {
       expect(response.Items[0].name).toBeDefined();
@@ -116,14 +111,13 @@ describe("DynamoDB interface", function () {
   });
 
   it("scans table with filter", function (done) {
-    var lib = require('../lib/scan');
     dynamo.tableName = "test";
 
     var options = {
       filter: {id: id}
     };
 
-    var response = lib.respond(dynamo,options);
+    var response = lib.scan(dynamo,options);
 
     response.then(function (response) {
       expect(response.Items[0].name).toBeDefined();
@@ -133,14 +127,13 @@ describe("DynamoDB interface", function () {
   });
 
   it("scans a table with limits", function (done) {
-    var lib = require('../lib/scan');
     dynamo.tableName = "test";
 
     var options = {
       limit: 2
     };
 
-    var response = lib.respond(dynamo,options);
+    var response = lib.scan(dynamo,options);
 
     response.then(function (response) {
       expect(response.Count).toBe(2);
@@ -148,7 +141,7 @@ describe("DynamoDB interface", function () {
 
       options.last = response.LastEvaluatedKey;
 
-      var response2 = lib.respond(dynamo,options);
+      var response2 = lib.scan(dynamo,options);
 
       response2.then(function (response) {
         expect(response.Count).toBe(1);
@@ -158,7 +151,6 @@ describe("DynamoDB interface", function () {
   });
 
   it("gets an item", function (done) {
-    var lib = require('../lib/get');
     dynamo.tableName = "test";
 
     var data = {
@@ -166,7 +158,7 @@ describe("DynamoDB interface", function () {
       id: id
     };
 
-    var response = lib.respond(data, dynamo);
+    var response = lib.get(data, dynamo);
 
     response.then(function (response) {
       expect(response.name).toBe('foo');
@@ -175,14 +167,13 @@ describe("DynamoDB interface", function () {
   });
 
   it("query a primary key", function (done) {
-    var lib = require('../lib/query');
     dynamo.tableName = "test";
 
     var data = {
       name: "foo"
     };
 
-    var response = lib.respond(data, dynamo);
+    var response = lib.query(data, dynamo);
 
     response.then(function (response) {
       expect(Array.isArray(response.Items)).toBeTruthy();
@@ -192,14 +183,13 @@ describe("DynamoDB interface", function () {
   });
 
   it("query a primary key, that doesn't return anything", function (done) {
-    var lib = require('../lib/query');
     dynamo.tableName = "test";
 
     var data = {
       name: "bar"
     };
 
-    var response = lib.respond(data, dynamo);
+    var response = lib.query(data, dynamo);
 
     response.then(function (response) {
       expect(Array.isArray(response.Items)).toBeTruthy();
@@ -208,7 +198,6 @@ describe("DynamoDB interface", function () {
   });
 
   it("query a primary key with a filter", function (done) {
-    var lib = require('../lib/query');
     dynamo.tableName = "test";
 
     var data = {
@@ -219,7 +208,7 @@ describe("DynamoDB interface", function () {
       filter: {number: '5'}
     };
 
-    var response = lib.respond(data, dynamo, options);
+    var response = lib.query(data, dynamo, options);
 
     response.then(function (response) {
       expect(response.Items[0].name).toBe('foo');
@@ -228,7 +217,6 @@ describe("DynamoDB interface", function () {
   });
 
   it("query a secondary index", function (done) {
-    var lib = require('../lib/query');
     dynamo.tableName = "test";
 
     var data = {
@@ -239,7 +227,7 @@ describe("DynamoDB interface", function () {
       index: 'SecIndex'
     };
 
-    var response = lib.respond(data, dynamo, options);
+    var response = lib.query(data, dynamo, options);
 
     response.then(function (response) {
       expect(response.Items[0].name).toBe('foo');
@@ -248,7 +236,6 @@ describe("DynamoDB interface", function () {
   });
 
   it("updates an item", function (done) {
-    var lib = require('../lib/update');
     dynamo.tableName = "test";
 
     var key = {
@@ -263,7 +250,7 @@ describe("DynamoDB interface", function () {
       sort: "B"
     };
 
-    var response = lib.respond(key, body, dynamo);
+    var response = lib.update(key, body, dynamo);
 
     response.then(function (response) {
       expect(response.name).toBe('foo');
@@ -273,7 +260,6 @@ describe("DynamoDB interface", function () {
   });
 
   it("can't overwrite an item", function (done) {
-    var lib = require('../lib/create');
     dynamo.tableName = "test";
 
     var data = {
@@ -288,10 +274,26 @@ describe("DynamoDB interface", function () {
       }
     };
 
-    var response = lib.respond(data, dynamo, options);
+    var response = lib.create(data, dynamo, options);
 
     response.catch(function (response) {
       expect(response).toMatch('ConditionalCheckFailedException');
+      done();
+    });
+  });
+
+  it("deletes an item", function (done) {
+    dynamo.tableName = "test";
+
+    var key = {
+      name: "foo",
+      id: id
+    };
+
+    var response = lib.delete(key, dynamo);
+
+    response.then(function (response) {
+      expect(response.name).toBe('foo');
       done();
     });
   });
