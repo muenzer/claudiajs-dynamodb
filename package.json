@@ -1,10 +1,13 @@
 {
   "name": "claudiajs-dynamodb",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Library of functions to help call dynamodb from within claudiajs",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "preversion": "npm run test",
+    "version": "",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
