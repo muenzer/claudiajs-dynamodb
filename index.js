@@ -14,3 +14,4 @@ exports.update = require('./lib/update');
 
 //help functions
 exports.querystring = require('./lib/querystring');
+exports.buildLink = require('./lib/buildlink');
