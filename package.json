@@ -29,6 +29,8 @@
     "shortid": "^2.2.8"
   },
   "devDependencies": {
+    "claudia": "^2.12.1",
+    "claudia-api-builder": "^2.4.2",
     "jasmine": "^2.5.3"
   },
   "optionalDependencies": {

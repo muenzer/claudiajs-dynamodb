@@ -133,21 +133,27 @@ describe("DynamoDB interface", function () {
       limit: 2
     };
 
-    var response = lib.scan(dynamo,options);
+    var getFirst = function () {
+      return lib.scan(dynamo,options).then(function (response) {
+        expect(response.Count).toBe(2);
+        expect(response.LastEvaluatedKey).toBeDefined();
 
-    response.then(function (response) {
-      expect(response.Count).toBe(2);
-      expect(response.LastEvaluatedKey).toBeDefined();
+        return response.LastEvaluatedKey;
+      });
+    };
 
-      options.last = response.LastEvaluatedKey;
+    var getSecond = function (last) {
+      options.last = last;
 
-      var response2 = lib.scan(dynamo,options);
-
-      response2.then(function (response) {
+      return lib.scan(dynamo,options).then(function (response) {
         expect(response.Count).toBe(1);
         done();
       });
-    });
+
+    };
+
+    getFirst()
+    .then(getSecond);
   });
 
   it("gets an item", function (done) {
@@ -173,13 +179,16 @@ describe("DynamoDB interface", function () {
       name: "foo"
     };
 
-    var response = lib.query(data, dynamo);
+    var query = function () {
+      return lib.query(data, dynamo).then(function (response) {
+        expect(Array.isArray(response.Items)).toBeTruthy();
+        expect(response.Items[0].name).toBe('foo');
+        done();
+      });
+    };
 
-    response.then(function (response) {
-      expect(Array.isArray(response.Items)).toBeTruthy();
-      expect(response.Items[0].name).toBe('foo');
-      done();
-    });
+    query();
+
   });
 
   it("query a primary key, that doesn't return anything", function (done) {
