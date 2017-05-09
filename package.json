@@ -1,6 +1,6 @@
 {
   "name": "claudiajs-dynamodb",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Library of functions to help call dynamodb from within claudiajs",
   "main": "index.js",
   "scripts": {
