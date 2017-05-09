@@ -1,13 +1,10 @@
-module.exports = function (route, dynamo) {
+module.exports = function (route, api, dynamo) {
   // GET    /posts
   // GET    /posts/1
   // POST   /posts
   // PUT    /posts/1
   // PATCH  /posts/1
   // DELETE /posts/1
-
-  var ApiBuilder = require('claudia-api-builder');
-  var api = new ApiBuilder();
 
   var lib = require('./lib.js');
 
