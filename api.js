@@ -9,7 +9,7 @@ module.exports = function (route, dynamo) {
   var ApiBuilder = require('claudia-api-builder');
   var api = new ApiBuilder();
 
-  var lib = require('./index.js');
+  var lib = require('./lib.js');
 
   var root = '/' + route;
 
