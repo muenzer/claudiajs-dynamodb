@@ -3,31 +3,31 @@ var lib = require('../index.js');
 var dynamo = {};
 var id = null;
 
-describe("DynamoDB interface", function () {
+describe('DynamoDB interface', function () {
   beforeEach(function () {
     var dynamoconfig = {
-      endpoint: "http://localhost:8000",
-      region: "someregion",
-      accessKeyId: "test",
-      secretAccessKey: "test"
+      endpoint: 'http://localhost:8000',
+      region: 'someregion',
+      accessKeyId: 'test',
+      secretAccessKey: 'test'
     };
 
     dynamo = new lib.dynamo(dynamoconfig);
-    dynamo.tableName = "test";
+    dynamo.tableName = 'test';
   });
 
-  it("that creates a table", function (done) {
+  it('that creates a table', function (done) {
     var params = {
       TableName: dynamo.tableName,
       AttributeDefinitions: [
-      { "AttributeName": "name", "AttributeType": "S" },
-      { "AttributeName": "id", "AttributeType": "S" },
-      { "AttributeName": "number", "AttributeType": "S" },
-      { "AttributeName": "sort", "AttributeType": "S" },
+      { 'AttributeName': 'name', 'AttributeType': 'S' },
+      { 'AttributeName': 'id', 'AttributeType': 'S' },
+      { 'AttributeName': 'number', 'AttributeType': 'S' },
+      { 'AttributeName': 'sort', 'AttributeType': 'S' },
       ],
       KeySchema: [
-      { "AttributeName": "name", "KeyType": "HASH" },
-      { "AttributeName": "id", "KeyType": "RANGE" }
+      { 'AttributeName': 'name', 'KeyType': 'HASH' },
+      { 'AttributeName': 'id', 'KeyType': 'RANGE' }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 1,
@@ -65,13 +65,13 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("creates an item", function (done) {
-    dynamo.tableName = "test";
+  it('creates an item', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      name: "foo",
-      number: "5",
-      sort: "A"
+      name: 'foo',
+      number: '5',
+      sort: 'A'
     };
 
     var response = lib.create(data, dynamo);
@@ -79,13 +79,13 @@ describe("DynamoDB interface", function () {
     //create additional items for pagination test
 
     data = {
-      name: "bar"
+      name: 'bar'
     };
 
     lib.create(data, dynamo);
 
     data = {
-      name: "car"
+      name: 'car'
     };
 
     lib.create(data, dynamo);
@@ -98,8 +98,8 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("scans table", function (done) {
-    dynamo.tableName = "test";
+  it('scans table', function (done) {
+    dynamo.tableName = 'test';
 
     var response = lib.scan(dynamo);
 
@@ -110,8 +110,8 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("scans table with filter", function (done) {
-    dynamo.tableName = "test";
+  it('scans table with filter', function (done) {
+    dynamo.tableName = 'test';
 
     var options = {
       filter: {id: id}
@@ -126,8 +126,8 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("scans a table with limits", function (done) {
-    dynamo.tableName = "test";
+  it('scans a table with limits', function (done) {
+    dynamo.tableName = 'test';
 
     var options = {
       limit: 2
@@ -156,11 +156,11 @@ describe("DynamoDB interface", function () {
     .then(getSecond);
   });
 
-  it("gets an item", function (done) {
-    dynamo.tableName = "test";
+  it('gets an item', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      name: "foo",
+      name: 'foo',
       id: id
     };
 
@@ -172,11 +172,11 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("query a primary key", function (done) {
-    dynamo.tableName = "test";
+  it('query a primary key', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      name: "foo"
+      name: 'foo'
     };
 
     var query = function () {
@@ -191,11 +191,11 @@ describe("DynamoDB interface", function () {
 
   });
 
-  it("query a primary key, that doesn't return anything", function (done) {
-    dynamo.tableName = "test";
+  it('query a primary key, that does not return anything', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      name: "bar"
+      name: 'bar'
     };
 
     var response = lib.query(data, dynamo);
@@ -206,11 +206,11 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("query a primary key with a filter", function (done) {
-    dynamo.tableName = "test";
+  it('query a primary key with a filter', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      name: "foo"
+      name: 'foo'
     };
 
     var options = {
@@ -225,11 +225,11 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("query a secondary index", function (done) {
-    dynamo.tableName = "test";
+  it('query a secondary index', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      number: "5"
+      number: '5'
     };
 
     var options = {
@@ -244,19 +244,19 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("updates an item", function (done) {
-    dynamo.tableName = "test";
+  it('updates an item', function (done) {
+    dynamo.tableName = 'test';
 
     var key = {
-      name: "foo",
+      name: 'foo',
       id: id
     };
 
     var body = {
-      name: "foo",
+      name: 'foo',
       id: id,
       size: 5,
-      sort: "B"
+      sort: 'B'
     };
 
     var response = lib.update(key, body, dynamo);
@@ -268,11 +268,11 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("can't overwrite an item", function (done) {
-    dynamo.tableName = "test";
+  it('can not overwrite an item', function (done) {
+    dynamo.tableName = 'test';
 
     var data = {
-      name: "foo",
+      name: 'foo',
       id: id
     };
 
@@ -291,11 +291,11 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("deletes an item", function (done) {
-    dynamo.tableName = "test";
+  it('deletes an item', function (done) {
+    dynamo.tableName = 'test';
 
     var key = {
-      name: "foo",
+      name: 'foo',
       id: id
     };
 
@@ -307,7 +307,7 @@ describe("DynamoDB interface", function () {
     });
   });
 
-  it("deletes the table", function (done) {
+  it('deletes the table', function (done) {
     var params = {
       TableName: dynamo.tableName,
     };

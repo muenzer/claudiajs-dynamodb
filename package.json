@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/muenzer/claudiajs-dynamodb#readme",
   "dependencies": {
+    "pluralize": "^4.0.0",
     "shortid": "^2.2.8"
   },
   "devDependencies": {
