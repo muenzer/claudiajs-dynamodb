@@ -25,13 +25,15 @@ module.exports = function (route, api, dynamo) {
   });
 
   api.get(root + '/{id}', function (request) {
+    var options = lib.querystring(request.queryString);
+
     var id = decodeURIComponent(request.pathParams.id);
 
     var key = {
       id: id
     };
 
-    return lib.get(key, dynamo);
+    return lib.get(key, dynamo, options);
   });
 
   api.post(root, function (request) {
