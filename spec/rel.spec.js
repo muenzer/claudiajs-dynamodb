@@ -94,6 +94,7 @@ describe('expand function', function () {
       expect(response.Count).toBe(1);
       expect(response.Items[0].parent).toBeDefined();
       expect(response.Items[0].parent.name).toBe('foo');
+      expect(dynamo.tableName).toBe('children');
       done();
     });
   });
@@ -117,6 +118,7 @@ describe('expand function', function () {
       expect(response.Count).toBe(1);
       expect(response.Items[0].children).toBeDefined();
       expect(response.Items[0].children[0].name).toBe('bar');
+      expect(dynamo.tableName).toBe('parents');
       done();
     });
   });
