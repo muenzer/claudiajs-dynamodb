@@ -4,7 +4,7 @@
   "description": "Library of functions to help call dynamodb from within claudiajs",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover --include-all-sources jasmine",
+    "test": "istanbul cover --include-all-sources jasmine -x 'spec/**/*.js'",
     "preversion": "npm run test",
     "version": "",
     "postversion": "git push && git push --tags && npm publish"

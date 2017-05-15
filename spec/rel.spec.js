@@ -3,6 +3,7 @@ var lib = require('../lib');
 var expand = require('../lib/expand');
 var embed = require('../lib/embed');
 var id = null;
+var childId = null;
 var dynamo = {};
 
 describe('expand function', function () {
@@ -60,7 +61,10 @@ describe('expand function', function () {
       };
       return lib.create(data, dynamo);
     })
-    .then(done)
+    .then(function (response) {
+      childId = response.id;
+      done();
+    })
     .catch(function (err) {
       console.log(err);
       done();
@@ -89,12 +93,37 @@ describe('expand function', function () {
     var response = lib.scan(dynamo, options);
 
     response.then(function (response) {
-      console.log('it', response);
       expect(response.Items[0].name).toBeDefined();
       expect(response.Count).toBe(1);
       expect(response.Items[0].parent).toBeDefined();
       expect(response.Items[0].parent.name).toBe('foo');
       expect(dynamo.tableName).toBe('children');
+      done();
+    });
+  });
+
+  it('expands a get', function (done) {
+    dynamo.tableName = 'children';
+
+    var options = {
+      expand: {
+        relId: 'parentId',
+        relTable: 'parents',
+        relLabel: 'parent'
+      }
+    };
+
+    var response = lib.get({id: childId}, dynamo, options);
+
+    response.then(function (response) {
+      console.log('it', response);
+      expect(response.name).toBeDefined();
+      expect(response.parent).toBeDefined();
+      expect(response.parent.name).toBe('foo');
+      expect(dynamo.tableName).toBe('children');
+      done();
+    }).catch(function (response) {
+      console.log('error', response);
       done();
     });
   });
@@ -113,12 +142,36 @@ describe('expand function', function () {
     var response = lib.scan(dynamo, options);
 
     response.then(function (response) {
-      console.log('it', response);
       expect(response.Items[0].name).toBeDefined();
       expect(response.Count).toBe(1);
       expect(response.Items[0].children).toBeDefined();
       expect(response.Items[0].children[0].name).toBe('bar');
       expect(dynamo.tableName).toBe('parents');
+      done();
+    });
+  });
+
+  it('embeds a get', function (done) {
+    dynamo.tableName = 'parents';
+
+    var options = {
+      embed: {
+        relId: 'parentId',
+        relTable: 'children',
+        relLabel: 'children'
+      }
+    };
+
+    var response = lib.get({id: id}, dynamo, options);
+
+    response.then(function (response) {
+      expect(response.name).toBeDefined();
+      expect(response.children).toBeDefined();
+      expect(response.children[0].name).toBe('bar');
+      expect(dynamo.tableName).toBe('parents');
+      done();
+    }).catch(function (response) {
+      console.log('error', response);
       done();
     });
   });
