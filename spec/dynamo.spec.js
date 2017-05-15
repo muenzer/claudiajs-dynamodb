@@ -307,6 +307,22 @@ describe('DynamoDB interface', function () {
     });
   });
 
+  it('trys to delete a deleted item', function (done) {
+    dynamo.tableName = 'test';
+
+    var key = {
+      name: 'foo',
+      id: id
+    };
+
+    var response = lib.delete(key, dynamo);
+
+    response.then(function (response) {
+      expect(response).toBe('nothing deleted');
+      done();
+    });
+  });
+
   it('deletes the table', function (done) {
     var params = {
       TableName: dynamo.tableName,
