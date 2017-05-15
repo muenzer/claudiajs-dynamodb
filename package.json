@@ -4,7 +4,7 @@
   "description": "Library of functions to help call dynamodb from within claudiajs",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine",
+    "test": "istanbul cover --include-all-sources jasmine",
     "preversion": "npm run test",
     "version": "",
     "postversion": "git push && git push --tags && npm publish"
@@ -32,6 +32,7 @@
   "devDependencies": {
     "claudia": "^2.12.1",
     "claudia-api-builder": "^2.4.2",
+    "istanbul": "^0.4.5",
     "jasmine": "^2.5.3"
   },
   "optionalDependencies": {
