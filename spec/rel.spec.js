@@ -116,14 +116,37 @@ describe('expand function', function () {
     var response = lib.get({id: childId}, dynamo, options);
 
     response.then(function (response) {
-      console.log('it', response);
       expect(response.name).toBeDefined();
       expect(response.parent).toBeDefined();
       expect(response.parent.name).toBe('foo');
       expect(dynamo.tableName).toBe('children');
       done();
     }).catch(function (response) {
-      console.log('error', response);
+      done();
+    });
+  });
+
+  it('expands a query', function (done) {
+    dynamo.tableName = 'children';
+
+    var options = {
+      expand: {
+        relId: 'parentId',
+        relTable: 'parents',
+        relLabel: 'parent'
+      }
+    };
+
+    var response = lib.query({id: childId}, dynamo, options);
+
+    response.then(function (response) {
+      expect(response.Items[0].name).toBeDefined();
+      expect(response.Count).toBe(1);
+      expect(response.Items[0].parent).toBeDefined();
+      expect(response.Items[0].parent.name).toBe('foo');
+      expect(dynamo.tableName).toBe('children');
+      done();
+    }).catch(function (response) {
       done();
     });
   });
@@ -174,6 +197,33 @@ describe('expand function', function () {
       console.log('error', response);
       done();
     });
+  });
+
+  it('embeds a query', function (done) {
+    dynamo.tableName = 'parents';
+
+    var options = {
+      embed: {
+        relId: 'parentId',
+        relTable: 'children',
+        relLabel: 'children'
+      }
+    };
+
+    var response = lib.query({id: id}, dynamo, options);
+
+    response.then(function (response) {
+      expect(response.Items[0].name).toBeDefined();
+      expect(response.Count).toBe(1);
+      expect(response.Items[0].children).toBeDefined();
+      expect(response.Items[0].children[0].name).toBe('bar');
+      expect(dynamo.tableName).toBe('parents');
+      done();
+    })
+  .catch(function (response) {
+    console.log('error', response);
+    done();
+  });
   });
 
   afterAll(function (done) {
