@@ -268,6 +268,34 @@ describe('DynamoDB interface', function () {
     });
   });
 
+  it('updates an item to remove an attribute', function (done) {
+    dynamo.tableName = 'test';
+
+    var key = {
+      name: 'foo',
+      id: id
+    };
+
+    var body = {
+      name: 'foo',
+      id: id,
+      size: null,
+      sort: 'B'
+    };
+
+    var response = lib.update(key, body, dynamo);
+
+    response.then(function (response) {
+      expect(response.name).toBe('foo');
+      expect(response.size).toBeUndefined();
+      done();
+    })
+    .catch(function (error) {
+      console.log(error);
+      done();
+    });
+  });
+
   it('can not overwrite an item', function (done) {
     dynamo.tableName = 'test';
 
