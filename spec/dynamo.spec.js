@@ -296,6 +296,32 @@ describe('DynamoDB interface', function () {
     });
   });
 
+  it('updates tries to update an item', function (done) {
+    dynamo.tableName = 'test';
+
+    var key = {
+      name: 'foo',
+      id: id
+    };
+
+    var body = {
+      name: 'foo',
+      id: id,
+      size: 10
+    };
+
+    var conditional = {
+      sort: 'A'
+    };
+
+    var response = lib.update(key, body, dynamo, conditional);
+
+    response.catch(function (response) {
+      expect(response).toMatch('ConditionalCheckFailedException');
+      done();
+    });
+  });
+
   it('can not overwrite an item', function (done) {
     dynamo.tableName = 'test';
 

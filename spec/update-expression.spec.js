@@ -27,5 +27,25 @@ describe('A function for creating the dyanmodb update call', function() {
     expect(expression.UpdateExpression).toBe('SET #Number = :Number REMOVE #PaymentStatus');
     expect(expression.ExpressionAttributeNames['#PaymentStatus']).toBe('PaymentStatus');
   });
+  it('creates the call with a condition', function() {
+    var body = {'PaymentStatus':'Registered','Number':1};
+    var condition = {'Size': 2};
+    var expression = update_expression.parse(body, condition);
+    expect(expression.UpdateExpression).toBe('SET #PaymentStatus = :PaymentStatus, #Number = :Number');
+    expect(expression.ExpressionAttributeValues[':Size']).toBe(2);
+    expect(expression.ExpressionAttributeNames['#Size']).toBe('Size');
+    expect(expression.ConditionExpression).toBe('#Size = :Size');
+  });
+  it('creates the call with a complex condition', function() {
+    var body = {'PaymentStatus':'Registered','Number':1};
+    var condition = {'Size': 'L', 'Cost': {value: 100, operator: '<'}};
+    var expression = update_expression.parse(body, condition);
+    expect(expression.UpdateExpression).toBe('SET #PaymentStatus = :PaymentStatus, #Number = :Number');
+    expect(expression.ExpressionAttributeValues[':Size']).toBe('L');
+    expect(expression.ExpressionAttributeNames['#Size']).toBe('Size');
+    expect(expression.ExpressionAttributeValues[':Cost']).toBe(100);
+    expect(expression.ExpressionAttributeNames['#Cost']).toBe('Cost');
+    expect(expression.ConditionExpression).toBe('#Size = :Size and #Cost < :Cost');
+  });
 
 });
