@@ -11,6 +11,8 @@ exports.get = require('./lib/get');
 exports.query = require('./lib/query');
 exports.scan = require('./lib/scan');
 exports.update = require('./lib/update');
+exports.expand = require('./lib/expand');
+exports.embed = require('./lib/embed');
 
 //help functions
 exports.querystring = require('./lib/querystring');
