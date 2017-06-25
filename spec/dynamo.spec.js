@@ -256,7 +256,8 @@ describe('DynamoDB interface', function () {
       name: 'foo',
       id: id,
       size: 5,
-      sort: 'B'
+      sort: 'B',
+      color: 'green'
     };
 
     var response = lib.update(key, body, dynamo);
@@ -280,18 +281,24 @@ describe('DynamoDB interface', function () {
       name: 'foo',
       id: id,
       size: null,
-      sort: 'B'
+      sort: 'B',
+      color: 'red'
     };
 
-    var response = lib.update(key, body, dynamo);
+    var conditional = {
+      color: 'green'
+    };
+
+    var response = lib.update(key, body, dynamo, conditional);
 
     response.then(function (response) {
       expect(response.name).toBe('foo');
       expect(response.size).toBeUndefined();
+      expect(response.color).toBe('red');
       done();
     })
     .catch(function (error) {
-      console.log(error);
+      fail(error);
       done();
     });
   });
