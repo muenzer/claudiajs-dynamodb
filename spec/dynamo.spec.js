@@ -399,8 +399,8 @@ describe('DynamoDB interface', function () {
     var params = {
       TableName: dynamo.tableName,
     };
-    dynamo.raw.deleteTable(params, function(err, data) {
-      expect(err).toBeNull();
+    lib.deleteTable(params, dynamo).then(function (response) {
+      expect(response).toBeDefined();
       done();
     });
   });

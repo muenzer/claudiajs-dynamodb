@@ -5,6 +5,7 @@ exports.dynamo = require('./lib/dynamo');
 
 //operations
 exports.createTable = require('./lib/create-table');
+exports.deleteTable = require('./lib/delete-table');
 exports.create = require('./lib/create');
 exports.delete = require('./lib/delete');
 exports.get = require('./lib/get');
