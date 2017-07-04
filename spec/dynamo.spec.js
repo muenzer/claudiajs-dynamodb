@@ -1,9 +1,20 @@
 var AWS = require('aws-sdk');
+var DynamoDbLocal = require('dynamodb-local');
 var lib = require('../index.js');
 var dynamo = {};
 var id = null;
 
 describe('DynamoDB interface', function () {
+  beforeAll(function (done) {
+    DynamoDbLocal.launch(8000).then(function (response) {
+      done();
+    });
+  });
+
+  afterAll(function () {
+    DynamoDbLocal.stop(8000);
+  });
+
   beforeEach(function () {
     var dynamoconfig = {
       endpoint: 'http://localhost:8000',
