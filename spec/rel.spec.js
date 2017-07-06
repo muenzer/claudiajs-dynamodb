@@ -53,7 +53,6 @@ describe('expand function', function () {
       id = response.id;
     })
     .then(function () {
-      console.log(id);
       dynamo.tableName = 'children';
       var data = {
         name: 'bar',

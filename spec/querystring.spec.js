@@ -14,7 +14,19 @@ describe('A function for parsing query paramters', function() {
   	var options = lib.querystring(queryString);
     expect(options).toBeDefined();
     expect(options.limit).toBe('2');
-    expect(options.last).toBe('abc');
+    expect(options.last).toEqual({id: 'abc'});
+    expect(options.filter).not.toBeDefined();
+  });
+  it('returns an options object from encoded parameters', function() {
+    queryString = {
+      _limit: 2,
+      _last: '%7B%22id%22%3A%22A%22%2C%22sort%22%3A1%7D',
+      _expand: 'table'
+    };
+    var options = lib.querystring(queryString);
+    expect(options).toBeDefined();
+    expect(options.limit).toBe('2');
+    expect(options.last).toEqual({id: 'A', sort: 1});
     expect(options.filter).not.toBeDefined();
   });
   it('returns an options object with expand', function() {
