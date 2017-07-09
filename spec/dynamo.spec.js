@@ -395,6 +395,34 @@ describe('DynamoDB interface', function () {
     });
   });
 
+  it('seeds 5 new items', function (done) {
+    dynamo.tableName = 'test';
+
+    var data = [
+      {
+        name: 'bob'
+      },
+      {
+        name: 'fred'
+      },
+      {
+        name: 'mary'
+      },
+      {
+        name: 'charlie'
+      },
+      {
+        name: 'george'
+      }
+    ];
+
+    lib.seed(data, dynamo)
+    .then(function (response) {
+      expect(response).toBe(5);
+      done();
+    });
+  });
+
   it('deletes the table', function (done) {
     var params = {
       TableName: dynamo.tableName,
