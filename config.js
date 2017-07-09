@@ -1,3 +1,31 @@
+module.exports.dynamo = function (route, request) {
+  var lib = require('./lib.js');
+
+  var dynamoconfig;
+
+  if(request.lambdaContext && request.lambdaContext.invokedFunctionArn) {
+    var region = request.lambdaContext.invokedFunctionArn.split(':')[3];
+    dynamoconfig = {region: region};
+  } else {
+    dynamoconfig = {
+      endpoint: 'http://localhost:8000',
+      region: 'someregion',
+      accessKeyId: 'test',
+      secretAccessKey: 'test'
+    };
+  }
+
+  var dynamo = new lib.dynamo(dynamoconfig);
+
+  if(request.env && request.env[route + 'Table']) {
+    dynamo.tableName = request.env[route + 'Table'];
+  } else {
+    dynamo.tableName = route;
+  }
+
+  return dynamo;
+};
+
 module.exports.create = function (route, options) {
   var lib = require('./lib.js');
 

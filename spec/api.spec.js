@@ -1,9 +1,14 @@
 var ApiBuilder = require('claudia-api-builder');
 var DynamoDbLocal = require('dynamodb-local');
 var lib = require('../index.js');
-//var dynamo = {};
 
 var api = new ApiBuilder();
+
+var options = {
+  database: {
+    region: 'local',
+  }
+};
 
 describe('stock api', function () {
   beforeAll(function (done) {
@@ -16,27 +21,16 @@ describe('stock api', function () {
     DynamoDbLocal.stop(8000);
   });
 
-  // beforeAll(function (done) {
-  //   lib.config.create('foo', 'local', 'dev')
-  //   .then(function (response) {
-  //     console.log('table created');
-  //     dynamo = response;
-  //     done();
-  //   });
-  // });
-
   beforeAll(function (done) {
-    var options = {
-      database: {
-        region: 'local',
-        stage: 'dev'
-      }
-    };
-    lib.api('foo', api, options)
+    lib.config.create('foo', options.database)
     .then(function (response) {
-      api = response;
+      console.log('table created');
       done();
     });
+  });
+
+  beforeAll(function () {
+    api = lib.api('foo', api);
   });
 
   // afterAll(function (done) {
