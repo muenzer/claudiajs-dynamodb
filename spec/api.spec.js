@@ -33,13 +33,14 @@ describe('stock api', function () {
     api = lib.api('foo', api);
   });
 
-  // afterAll(function (done) {
-  //   lib.config.distroy(dynamo)
-  //   .then(function (response) {
-  //     console.log('table deleted');
-  //     done();
-  //   });
-  // });
+  afterAll(function (done) {
+    var dynamo = lib.config.dynamo('foo', {});
+    lib.config.distroy(dynamo)
+    .then(function (response) {
+      console.log('table deleted');
+      done();
+    });
+  });
 
   describe('checks api functions', function () {
     var lambdaContextSpy;
