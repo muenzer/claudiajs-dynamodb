@@ -13,6 +13,30 @@ module.exports = function (route, api) {
 
   api.addPostDeployConfig(route + 'Table', 'Enter a table name for ' + route + ':', route + 'Table');
 
+  // api.addPostDeployStep('databaseConfig', function (options, lambdaDetails, utils) {
+  // 	'use strict';
+  // 	var config = options['dbConfig'];
+  // 	if (!config) {
+  // 		return;
+  // 	}
+  //
+  //   var tables = require('./' + options['dbConfig']);
+  //
+  //   var dynamodb = new utils.AWS.DynamoDB({region: lambdaDetails.region});
+  //
+  //   var createTables = tables.map(function (params) {
+  //     return dynamodb.createTable(params).promise();
+  //   });
+  //
+  //   return Promise.all(createTables)
+  //   .then(function () {
+  //     return 'tables created';
+  //   })
+  //   .catch(function () {
+  //     return 'table creation failed';
+  //   });
+  // });
+
   api.get(root, function (request) {
     var dynamo = config.dynamo(route, request);
 
@@ -89,6 +113,35 @@ module.exports = function (route, api) {
     };
 
     return lib.delete(key, dynamo);
+  });
+
+  api.post(root + '/seed', function (request) {
+    if(!request.env || !request.env.test) {
+      throw('Seed is not enabled');
+    }
+
+    var dynamo = config.dynamo(route, request);
+
+    var data = request.body.items;
+
+    return lib.seed(data, dynamo);
+  });
+
+  api.post(root + '/reseed', function (request) {
+    if(!request.env || !request.env.test) {
+      throw('Reseed is not enabled');
+    }
+
+    var dynamo = config.dynamo(route, request);
+
+    var data = request.body.items;
+
+    return lib.config.destroy(dynamo)
+    .then(function (response) {
+      return lib.config.create(dynamo);
+    }).then(function (response) {
+      return lib.seed(data, dynamo);
+    });
   });
 
   return api;

@@ -48,32 +48,20 @@ describe('configure', function () {
 
   describe('creates and deletes a table', function () {
     it('create table', function (done) {
-      config.create('foo', {region: 'local', stage: 'dev'})
+      var request = {
+        env: {
+          fooTable: 'foo_dev'
+        }
+      };
+      dynamo = config.dynamo('foo', request);
+
+      config.create(dynamo)
       .then(function (response) {
         expect(response).toBeDefined();
-        dynamo = response;
 
         dynamo.raw.describeTable({TableName: dynamo.tableName}).promise()
         .then(function (response) {
-          expect(response.Table.TableName).toBe('dev_foo');
-          done();
-        })
-        .catch(function (error) {
-          fail(error);
-          done();
-        });
-      });
-    });
-
-    it('uses an existing table', function (done) {
-      config.create('foo', {region: 'local', stage: 'dev'})
-      .then(function (response) {
-        expect(response).toBeDefined();
-        dynamo = response;
-
-        dynamo.raw.describeTable({TableName: dynamo.tableName}).promise()
-        .then(function (response) {
-          expect(response.Table.TableName).toBe('dev_foo');
+          expect(response.Table.TableName).toBe('foo_dev');
           done();
         })
         .catch(function (error) {
@@ -84,9 +72,9 @@ describe('configure', function () {
     });
 
     it('deletes a table', function (done) {
-      config.distroy(dynamo).
+      config.destroy(dynamo).
       then(function (response) {
-        expect(response.TableDescription.TableName).toBe('dev_foo');
+        expect(response.TableDescription.TableName).toBe('foo_dev');
         done();
       })
       .catch(function (error) {

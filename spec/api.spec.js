@@ -17,12 +17,9 @@ describe('stock api', function () {
     });
   });
 
-  afterAll(function () {
-    DynamoDbLocal.stop(8000);
-  });
-
   beforeAll(function (done) {
-    lib.config.create('foo', options.database)
+    var dynamo = lib.config.dynamo('foo', {});
+    lib.config.create(dynamo)
     .then(function (response) {
       console.log('table created');
       done();
@@ -35,11 +32,16 @@ describe('stock api', function () {
 
   afterAll(function (done) {
     var dynamo = lib.config.dynamo('foo', {});
-    lib.config.distroy(dynamo)
+    lib.config.destroy(dynamo)
     .then(function (response) {
       console.log('table deleted');
       done();
     });
+  });
+
+
+  afterAll(function () {
+    DynamoDbLocal.stop(8000);
   });
 
   describe('checks api functions', function () {
@@ -198,6 +200,111 @@ describe('stock api', function () {
         expect(lambdaContextSpy.done).toHaveBeenCalledWith(null, jasmine.objectContaining({statusCode:200}));
         var body = JSON.parse(lambdaContextSpy.done.calls.argsFor(0)[1].body);
         expect(body.id).toBe('1');
+      })
+      .then(done, done.fail);
+    });
+
+    it('tries to seed the database', function (done) {
+      api.proxyRouter({
+        requestContext: {
+          resourcePath: '/foo/seed',
+          httpMethod: 'POST'
+        },
+        body: {
+          items: [
+            {
+              name: 'bob'
+            },
+            {
+              name: 'fred'
+            },
+            {
+              name: 'mary'
+            },
+            {
+              name: 'charlie'
+            },
+            {
+              name: 'george'
+            }
+          ]
+        }
+      }, lambdaContextSpy)
+      .then(function () {
+        expect(lambdaContextSpy.done).toHaveBeenCalled();
+        expect(lambdaContextSpy.done).toHaveBeenCalledWith(null, jasmine.objectContaining({statusCode:500}));
+      })
+      .then(done, done.fail);
+    });
+
+    it('tries to seed the database when enabled', function (done) {
+      api.proxyRouter({
+        requestContext: {
+          resourcePath: '/foo/seed',
+          httpMethod: 'POST'
+        },
+        stageVariables: {
+          test: true
+        },
+        body: {
+          items: [
+            {
+              name: 'bob'
+            },
+            {
+              name: 'fred'
+            },
+            {
+              name: 'mary'
+            },
+            {
+              name: 'charlie'
+            },
+            {
+              name: 'george'
+            }
+          ]
+        }
+      }, lambdaContextSpy)
+      .then(function () {
+        expect(lambdaContextSpy.done).toHaveBeenCalled();
+        expect(lambdaContextSpy.done).toHaveBeenCalledWith(null, jasmine.objectContaining({statusCode:200}));
+      })
+      .then(done, done.fail);
+    });
+
+    it('tries to reseed the database when enabled', function (done) {
+      api.proxyRouter({
+        requestContext: {
+          resourcePath: '/foo/reseed',
+          httpMethod: 'POST'
+        },
+        stageVariables: {
+          test: true
+        },
+        body: {
+          items: [
+            {
+              name: 'bob'
+            },
+            {
+              name: 'fred'
+            },
+            {
+              name: 'mary'
+            },
+            {
+              name: 'charlie'
+            },
+            {
+              name: 'george'
+            }
+          ]
+        }
+      }, lambdaContextSpy)
+      .then(function () {
+        expect(lambdaContextSpy.done).toHaveBeenCalled();
+        expect(lambdaContextSpy.done).toHaveBeenCalledWith(null, jasmine.objectContaining({statusCode:200}));
       })
       .then(done, done.fail);
     });

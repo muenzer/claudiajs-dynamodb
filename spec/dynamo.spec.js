@@ -418,7 +418,7 @@ describe('DynamoDB interface', function () {
 
     lib.seed(data, dynamo)
     .then(function (response) {
-      expect(response).toBe(5);
+      expect(response.length).toBe(5);
       done();
     });
   });

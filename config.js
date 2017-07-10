@@ -23,54 +23,38 @@ module.exports.dynamo = function (route, request) {
     dynamo.tableName = route;
   }
 
+  if(request.env && request.env.dbConfig) {
+    dynamo.config = request.env.dbConfig;
+  }
+
   return dynamo;
 };
 
-module.exports.create = function (route, options) {
+module.exports.create = function (dynamo) {
   var lib = require('./lib.js');
-
-  var dynamoconfig;
-
-  if(!options) {
-    options = {};
-  }
-
-  if(!options.region) {
-    options.region = 'us-east-1';
-  }
-  if(options.region === 'local') {
-    dynamoconfig = {
-      endpoint: 'http://localhost:8000',
-      region: 'someregion',
-      accessKeyId: 'test',
-      secretAccessKey: 'test'
-    };
-  } else {
-    dynamoconfig = {region: options.region};
-  }
-
-  var dynamo = new lib.dynamo(dynamoconfig);
-
-  if(options.stage) {
-    dynamo.tableName = options.stage + '_' + route;
-  } else {
-    dynamo.tableName = route;
-  }
 
   return dynamo.raw.describeTable({TableName: dynamo.tableName}).promise()
   .then(function (response) {
-    return dynamo;
+    return dynamo.tableName + ' already exists';
   })
   .catch(function (error) {
     if(error.code === 'ResourceNotFoundException') {
-      if(!options.params) {
-        options.params = {
+      var config;
+      var params;
+
+      if(dynamo.config) {
+        config = require('./' + dynamo.config);
+        params = config[dynamo.tableName];
+      }
+
+      if(!params) {
+        params = {
           TableName: dynamo.tableName,
           AttributeDefinitions: [
-          { 'AttributeName': 'id', 'AttributeType': 'S' },
+            { 'AttributeName': 'id', 'AttributeType': 'S' },
           ],
           KeySchema: [
-          { 'AttributeName': 'id', 'KeyType': 'HASH' },
+            { 'AttributeName': 'id', 'KeyType': 'HASH' },
           ],
           ProvisionedThroughput: {
             ReadCapacityUnits: 1,
@@ -79,16 +63,16 @@ module.exports.create = function (route, options) {
         };
       }
 
-      return lib.createTable(options.params, dynamo)
+      return lib.createTable(params, dynamo)
       .then(function (response) {
-        return dynamo;
+        return dynamo.tableName + ' created';
       });
     }
     throw error;
   });
 };
 
-module.exports.distroy = function (dynamo) {
+module.exports.destroy = function (dynamo) {
   var lib = require('./lib.js');
 
   var params = {
