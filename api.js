@@ -144,5 +144,15 @@ module.exports = function (route, api) {
     });
   });
 
+  api.post(root + '/createtable', function (request) {
+    if(!request.env || !request.env.test) {
+      throw('Create table is not enabled');
+    }
+
+    var dynamo = config.dynamo(route, request);
+
+    return lib.config.create(dynamo);
+  });
+
   return api;
 };

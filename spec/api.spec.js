@@ -17,14 +17,14 @@ describe('stock api', function () {
     });
   });
 
-  beforeAll(function (done) {
-    var dynamo = lib.config.dynamo('foo', {});
-    lib.config.create(dynamo)
-    .then(function (response) {
-      console.log('table created');
-      done();
-    });
-  });
+  // beforeAll(function (done) {
+  //   var dynamo = lib.config.dynamo('foo', {});
+  //   lib.config.create(dynamo)
+  //   .then(function (response) {
+  //     console.log('table created');
+  //     done();
+  //   });
+  // });
 
   beforeAll(function () {
     api = lib.api('foo', api);
@@ -49,6 +49,23 @@ describe('stock api', function () {
 
     beforeEach(function () {
       lambdaContextSpy = jasmine.createSpyObj('lambdaContext', ['done']);
+    });
+
+    it('creates the table', function (done) {
+      api.proxyRouter({
+        requestContext: {
+          resourcePath: '/foo/createtable',
+          httpMethod: 'POST'
+        },
+        stageVariables: {
+          test: true
+        }
+      }, lambdaContextSpy)
+      .then(function () {
+        expect(lambdaContextSpy.done).toHaveBeenCalled();
+        expect(lambdaContextSpy.done).toHaveBeenCalledWith(null, jasmine.objectContaining({statusCode:200}));
+      })
+      .then(done, done.fail);
     });
 
     it('posts an object', function (done) {
