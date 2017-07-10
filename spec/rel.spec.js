@@ -1,4 +1,6 @@
 var AWS = require('aws-sdk');
+var DynamoDbLocal = require('dynamodb-local');
+
 var lib = require('../lib');
 var expand = require('../lib/expand');
 var embed = require('../lib/embed');
@@ -7,6 +9,12 @@ var childId = null;
 var dynamo = {};
 
 describe('expand function', function () {
+  beforeAll(function (done) {
+    DynamoDbLocal.launch(8000, null, ['-inMemory']).then(function (response) {
+      done();
+    });
+  });
+
   beforeAll(function () {
     var dynamoconfig = {
       endpoint: 'http://localhost:8000',
@@ -241,5 +249,9 @@ describe('expand function', function () {
     dynamo.raw.deleteTable(params, function(err, data) {
       done();
     });
+  });
+
+  afterAll(function () {
+    DynamoDbLocal.stop(8000);
   });
 });
