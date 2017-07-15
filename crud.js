@@ -9,6 +9,7 @@ module.exports = function (routes) {
   }
 
   api.addPostDeployConfig('mode', 'Set mode: ', 'mode');
+  api.addPostDeployConfig('dbConfig', 'Config file for database: ', 'db-config');
 
   return api;
 };
