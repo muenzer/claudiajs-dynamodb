@@ -27,11 +27,11 @@
   "homepage": "https://github.com/muenzer/claudiajs-dynamodb#readme",
   "dependencies": {
     "pluralize": "^4.0.0",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "claudia": "^2.14.1",
+    "claudia-api-builder": "^2.5.1"
   },
   "devDependencies": {
-    "claudia": "^2.12.1",
-    "claudia-api-builder": "^2.4.2",
     "dynamodb-local": "0.0.18",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.3"

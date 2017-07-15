@@ -43,7 +43,8 @@ module.exports.create = function (dynamo) {
       var params;
 
       if(dynamo.config) {
-        config = require('./' + dynamo.config);
+        var path = require('path');
+        config = require(path.resolve(process.cwd(), dynamo.config));
         params = config[dynamo.tableName];
       }
 

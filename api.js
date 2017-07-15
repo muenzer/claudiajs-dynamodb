@@ -116,7 +116,7 @@ module.exports = function (route, api) {
   });
 
   api.post(root + '/seed', function (request) {
-    if(!request.env || !request.env.test) {
+    if(!request.env || !request.env.mode || request.env.mode !== 'test') {
       throw('Seed is not enabled');
     }
 
@@ -128,7 +128,7 @@ module.exports = function (route, api) {
   });
 
   api.post(root + '/reseed', function (request) {
-    if(!request.env || !request.env.test) {
+    if(!request.env || !request.env.mode || request.env.mode !== 'test') {
       throw('Reseed is not enabled');
     }
 
@@ -145,7 +145,7 @@ module.exports = function (route, api) {
   });
 
   api.post(root + '/createtable', function (request) {
-    if(!request.env || !request.env.test) {
+    if(!request.env || !request.env.mode || request.env.mode !== 'test') {
       throw('Create table is not enabled');
     }
 
