@@ -1,9 +1,7 @@
-module.exports = function () {
-  var crud = require('../crud.js');
-
+module.exports = function (lib) {
   describe('build full crud api', function () {
     it('retuen api', function () {
-      var api = crud(['foo', 'bar']);
+      var api = lib.crud(['foo', 'bar']);
 
       expect(api).toBeDefined();
     });

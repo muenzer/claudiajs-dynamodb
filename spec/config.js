@@ -1,11 +1,10 @@
-module.exports = function () {
-  var config = require('../config.js');
+module.exports = function (lib) {
   var dynamo;
 
   describe('configure', function () {
     describe('returns a dynamo handle', function () {
       it('without a request', function () {
-        dynamo = config.dynamo('foo', {});
+        dynamo = lib.config.dynamo('foo', {});
         expect(dynamo.tableName).toBe('foo');
         expect(dynamo.raw.config.region).toBe('someregion');
       });
@@ -16,7 +15,7 @@ module.exports = function () {
             invokedFunctionArn: 'arn:aws:lambda:us-east-1:12345:function:somefunction:latest'
           }
         };
-        dynamo = config.dynamo('foo', request);
+        dynamo = lib.config.dynamo('foo', request);
         expect(dynamo.tableName).toBe('foo');
         expect(dynamo.raw.config.region).toBe('us-east-1');
       });
@@ -30,7 +29,7 @@ module.exports = function () {
             fooTable: 'foo_dev'
           }
         };
-        dynamo = config.dynamo('foo', request);
+        dynamo = lib.config.dynamo('foo', request);
         expect(dynamo.tableName).toBe('foo_dev');
         expect(dynamo.raw.config.region).toBe('us-east-1');
       });
@@ -43,9 +42,9 @@ module.exports = function () {
             fooTable: 'foo_dev'
           }
         };
-        dynamo = config.dynamo('foo', request);
+        dynamo = lib.config.dynamo('foo', request);
 
-        config.create(dynamo)
+        lib.config.create(dynamo)
         .then(function (response) {
           expect(response).toBeDefined();
 
@@ -62,7 +61,7 @@ module.exports = function () {
       });
 
       it('deletes a table', function (done) {
-        config.destroy(dynamo).
+        lib.config.destroy(dynamo).
         then(function (response) {
           expect(response.TableDescription.TableName).toBe('foo_dev');
           done();

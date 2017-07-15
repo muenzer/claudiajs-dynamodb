@@ -1,9 +1,6 @@
-module.exports = function () {
+module.exports = function (lib) {
   var AWS = require('aws-sdk');
 
-  var lib = require('../lib');
-  var expand = require('../lib/expand');
-  var embed = require('../lib/embed');
   var id = null;
   var childId = null;
   var dynamo = {};

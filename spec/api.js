@@ -1,7 +1,5 @@
-module.exports = function () {
+module.exports = function (lib) {
   var ApiBuilder = require('claudia-api-builder');
-
-  var lib = require('../index.js');
 
   var api = new ApiBuilder();
 

@@ -5,6 +5,8 @@ var configSpec = require('./config.js');
 var curdSpec = require('./crud.js');
 var relSpec = require('./rel.js');
 
+var lib = require('../lib');
+
 var DynamoDbLocal = require('dynamodb-local');
 
 describe('setup test enviroment', function () {
@@ -19,9 +21,9 @@ describe('setup test enviroment', function () {
   });
 
   describe('database tests', function () {
-    dynamoSpec();
-    apiSpec();
-    configSpec();
-    relSpec();
+    dynamoSpec(lib);
+    apiSpec(lib);
+    configSpec(lib);
+    relSpec(lib);
   });
 });

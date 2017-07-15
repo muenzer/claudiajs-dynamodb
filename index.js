@@ -4,4 +4,4 @@ exports.api = require('./api');
 
 exports.config = require('./config');
 
-exports.crug = require('./crud');
+exports.crud = require('./crud');
