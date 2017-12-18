@@ -47,5 +47,24 @@ describe('A function for creating the dyanmodb update call', function() {
     expect(expression.ExpressionAttributeNames['#con_Cost']).toBe('Cost');
     expect(expression.ConditionExpression).toBe('#con_Size = :con_Size and #con_Cost < :con_Cost');
   });
+  it('creates the call with an operator', function () {
+    var body = {'PaymentStatus':'Registered','Number': {atomic: 'Number', value: 100, operator: '+'}};
+    var expression = update_expression.parse(body);
+    expect(expression.UpdateExpression).toBe('SET #PaymentStatus = :PaymentStatus, #Number = #Number + :atomicNumber');
+    expect(expression.ExpressionAttributeValues[':PaymentStatus']).toBe('Registered');
+    expect(expression.ExpressionAttributeValues[':atomicNumber']).toBe(100);
+    expect(expression.ExpressionAttributeNames['#PaymentStatus']).toBe('PaymentStatus');
+    expect(expression.ExpressionAttributeNames['#Number']).toBe('Number');
+  })
+  it('creates the call with an operator and two attributes', function () {
+    var body = {'PaymentStatus':'Registered','Number': {atomic: 'Length', value: 10, operator: '+'}};
+    var expression = update_expression.parse(body);
+    expect(expression.UpdateExpression).toBe('SET #PaymentStatus = :PaymentStatus, #Number = #Length + :atomicLength');
+    expect(expression.ExpressionAttributeValues[':PaymentStatus']).toBe('Registered');
+    expect(expression.ExpressionAttributeValues[':atomicLength']).toBe(10);
+    expect(expression.ExpressionAttributeNames['#PaymentStatus']).toBe('PaymentStatus');
+    expect(expression.ExpressionAttributeNames['#Number']).toBe('Number');
+    expect(expression.ExpressionAttributeNames['#Length']).toBe('Length');
+  })
 
 });
