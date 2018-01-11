@@ -26,10 +26,11 @@
   },
   "homepage": "https://github.com/muenzer/claudiajs-dynamodb#readme",
   "dependencies": {
-    "pluralize": "^4.0.0",
-    "shortid": "^2.2.8",
     "claudia": "^2.14.1",
-    "claudia-api-builder": "^2.5.1"
+    "claudia-api-builder": "^2.5.1",
+    "object-merge": "^2.5.1",
+    "pluralize": "^4.0.0",
+    "shortid": "^2.2.8"
   },
   "devDependencies": {
     "dynamodb-local": "0.0.18",
